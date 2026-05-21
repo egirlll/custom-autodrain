@@ -492,6 +492,66 @@ function spawnImage() {
     .catch(e => console.log("Image fetch error:", e));
 }
 
+// Floating text prompts
+const edgePrompts = [
+  "don't cum ~ 💕",
+  "just one more send… 💞",
+  "ur doing such a good job ~ 🤭",
+  "ur such a good boy 💕",
+  "keep going ~ 💞",
+  "don't stop 🤭",
+  "good boy 💕",
+  "deeper and deeper ~ 💞",
+  "stroke for me ~ 🤭",
+  "just give in 💕",
+  "faster ~ 💞",
+  "edge for me ~ 🤭",
+  "don't u dare stop ~ 💕",
+  "ur mine now 💞",
+  "keep pumping ~ 🤭",
+  "sooo close ~ 💕",
+  "that's it good boy 💞",
+  "u can't stop now ~ 🤭",
+  "one more… 💕",
+  "send again ~ 💞"
+];
+
+function spawnText() {
+  if (imageSpawningPaused) return;
+  
+  const text = document.createElement("div");
+  const prompt = edgePrompts[Math.floor(Math.random() * edgePrompts.length)];
+  text.textContent = prompt;
+  text.className = "spawned-text";
+  text.style.cssText = `
+    position: fixed;
+    pointer-events: none;
+    z-index: 10001;
+    color: #ff1493;
+    font-size: ${40 + Math.random() * 30}px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255,20,147,0.6), 0 2px 4px rgba(0,0,0,0.8);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  `;
+  
+  const pos = calculateImagePosition();
+  text.style.left = pos.left + "px";
+  text.style.top = pos.top + "px";
+  
+  document.body.appendChild(text);
+  
+  requestAnimationFrame(() => { text.style.opacity = "1"; });
+  
+  const duration = 2000 + Math.random() * 2000;
+  setTimeout(() => {
+    text.style.opacity = "0";
+    setTimeout(() => text.remove(), 500);
+  }, duration);
+}
+
 // Reposition all existing spawned images for current window size
 function repositionSpawnedImages() {
   document.querySelectorAll('.spawned-image').forEach(img => {
@@ -923,6 +983,7 @@ function startMainLoop() {
   }
 
   setInterval(spawnImage, 250);
+  setInterval(spawnText, 2500);
 
   // Reposition images on resize so they don't overlap the safe zone
   window.addEventListener('resize', repositionSpawnedImages);
